@@ -191,19 +191,6 @@
             letter-spacing: 0.5px;
         }
 
-        .igreja-card {
-            border: 2px solid #e2e8f0;
-            transition: all 0.3s;
-        }
-        .igreja-card:hover {
-            border-color: #FF6B00;
-            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.15);
-        }
-        .igreja-card.selected {
-            border-color: #FF6B00;
-            background: #fff7ed;
-        }
-
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -223,39 +210,117 @@
             color: #94a3b8;
             font-size: 14px;
         }
+
+        .igreja-card {
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        .igreja-card:hover {
+            border-color: #FF6B00;
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.15);
+        }
+
+        .notification-count {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            position: absolute;
+            top: -4px;
+            right: -4px;
+        }
+
+        .notification-item {
+            border-left: 4px solid #FF6B00;
+            background: white;
+            transition: all 0.3s;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+        .notification-item.confirmed {
+            border-left-color: #22c55e;
+            opacity: 0.7;
+        }
+        .notification-item.replaced {
+            border-left-color: #f59e0b;
+            opacity: 0.7;
+        }
+        .notification-item .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .notification-item .action-buttons button {
+            flex: 1;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .notification-item .action-buttons .btn-confirm {
+            background: #22c55e;
+            color: white;
+        }
+        .notification-item .action-buttons .btn-confirm:hover {
+            background: #16a34a;
+        }
+        .notification-item .action-buttons .btn-replace {
+            background: #f59e0b;
+            color: white;
+        }
+        .notification-item .action-buttons .btn-replace:hover {
+            background: #d97706;
+        }
+
+        .admin-user-card {
+            transition: all 0.3s;
+        }
+        .admin-user-card:hover {
+            background: #f8fafc;
+        }
+        .admin-user-card .role-toggle {
+            transition: all 0.3s;
+        }
+        .admin-user-card .role-toggle:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
-    <!-- AUTH CONTAINER -->
+    <!-- AUTH CONTAINER - SEMPRE MOSTRA CADASTRO PRIMEIRO -->
     <div id="auth-container" class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">MA</div>
-            <h2 id="auth-title" class="text-2xl font-bold text-center text-slate-800 mb-2">Bem-vindo</h2>
+            <h2 id="auth-title" class="text-2xl font-bold text-center text-slate-800 mb-2">Criar Conta</h2>
             <p id="auth-subtitle" class="text-center text-slate-500 text-sm mb-6">Sistema de Escalas - ADENF</p>
             
             <form id="auth-form" onsubmit="handleAuth(event)" class="space-y-4">
-                <!-- Campos de registro -->
-                <div id="register-fields" class="hidden space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Nome Completo</label>
-                        <input type="text" id="reg-nome" class="auth-input" placeholder="Seu nome completo" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Celular</label>
-                        <input type="tel" id="reg-celular" class="auth-input" placeholder="(88) 99999-9999" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Código da Igreja</label>
-                        <input type="text" id="reg-codigo-igreja" class="auth-input" placeholder="Digite o código da igreja">
-                        <p class="text-xs text-slate-400 mt-1">Deixe em branco se for criar uma nova igreja</p>
-                    </div>
+                <!-- Campos de registro (sempre visíveis) -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Nome Completo</label>
+                    <input type="text" id="reg-nome" class="auth-input" placeholder="Seu nome completo" required>
                 </div>
-
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Celular</label>
+                    <input type="tel" id="reg-celular" class="auth-input" placeholder="(88) 99999-9999" required>
+                </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">E-mail</label>
                     <input type="email" id="auth-email" class="auth-input" placeholder="seu@email.com" required>
                 </div>
-
                 <div class="relative">
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Senha</label>
                     <input type="password" id="auth-password" class="auth-input pr-12" placeholder="••••••••" required minlength="6">
@@ -263,26 +328,31 @@
                         <i class="fa-regular fa-eye"></i>
                     </span>
                 </div>
-
-                <div id="admin-password-field" class="hidden">
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Senha de Administrador</label>
-                    <input type="password" id="admin-password" class="auth-input" placeholder="Digite a senha de admin">
-                    <p class="text-xs text-slate-400 mt-1">Necessário apenas para administradores</p>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Código da Igreja</label>
+                    <input type="text" id="reg-codigo-igreja" class="auth-input" placeholder="Digite o código da igreja (opcional)">
+                    <p class="text-xs text-slate-400 mt-1">Deixe em branco se for o <strong>primeiro usuário</strong> ou se for criar uma nova igreja</p>
                 </div>
 
                 <button type="submit" id="auth-submit-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 rounded-2xl transition-all btn-touch text-base">
-                    Entrar
+                    Cadastrar
                 </button>
             </form>
 
             <div class="mt-6 text-center">
-                <span id="auth-toggle-text" class="text-sm text-slate-500">Não tem uma conta?</span>
+                <span id="auth-toggle-text" class="text-sm text-slate-500">Já tem uma conta?</span>
                 <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-orange-500 font-semibold text-sm hover:text-orange-600 transition-colors ml-1">
-                    Criar conta
+                    Fazer login
                 </button>
             </div>
 
             <div id="auth-error" class="hidden mt-4 p-3 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-sm text-center"></div>
+            
+            <!-- Informação para o primeiro usuário -->
+            <div id="first-user-info" class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-2xl text-blue-700 text-sm">
+                <i class="fa-solid fa-info-circle mr-2"></i>
+                <strong>Primeiro usuário?</strong> Você será o administrador master e poderá criar sua igreja.
+            </div>
         </div>
     </div>
 
@@ -428,7 +498,6 @@
         const CONFIG = {
             APP_NAME: 'Escalas Mídia Adenf',
             STORAGE_KEY: 'midia_adenf_data',
-            ADMIN_PASSWORD: 'Admin1975',
             VERSION: '1.0.0'
         };
 
@@ -438,10 +507,11 @@
         let state = {
             currentUser: null,
             isAdmin: false,
+            isMaster: false,
             currentPage: 'dashboard',
             sidebarOpen: false,
             mobileSearchOpen: false,
-            isLoginMode: true
+            isLoginMode: false // Começa em modo de cadastro
         };
 
         // ============================================
@@ -483,18 +553,8 @@
             return false;
         }
 
-        function initDefaultData() {
-            // Tudo vazio! O admin master será criado via cadastro
-            igrejas = [];
-            membros = [];
-            cultos = [];
-            notifications = [];
-            usuarios = [];
-            saveData();
-        }
-
         // ============================================
-        // AUTH
+        // AUTH - SEMPRE COMEÇA EM MODO CADASTRO
         // ============================================
         function togglePassword() {
             const input = document.getElementById('auth-password');
@@ -515,28 +575,40 @@
             const submitBtn = document.getElementById('auth-submit-btn');
             const toggleText = document.getElementById('auth-toggle-text');
             const toggleBtn = document.getElementById('auth-toggle-btn');
-            const registerFields = document.getElementById('register-fields');
-            const adminField = document.getElementById('admin-password-field');
+            const firstUserInfo = document.getElementById('first-user-info');
             const errorDiv = document.getElementById('auth-error');
             
             errorDiv.classList.add('hidden');
             
             if (state.isLoginMode) {
+                // Modo LOGIN
                 title.textContent = 'Bem-vindo de volta';
                 subtitle.textContent = 'Faça login para continuar';
                 submitBtn.textContent = 'Entrar';
                 toggleText.textContent = 'Não tem uma conta?';
                 toggleBtn.textContent = 'Criar conta';
-                registerFields.classList.add('hidden');
-                adminField.classList.add('hidden');
+                firstUserInfo.classList.add('hidden');
+                // Esconde campos extras do cadastro
+                document.getElementById('reg-nome').parentElement.style.display = 'none';
+                document.getElementById('reg-celular').parentElement.style.display = 'none';
+                document.getElementById('reg-codigo-igreja').parentElement.style.display = 'none';
             } else {
+                // Modo CADASTRO
                 title.textContent = 'Criar Conta';
                 subtitle.textContent = 'Cadastre-se para começar';
                 submitBtn.textContent = 'Cadastrar';
                 toggleText.textContent = 'Já tem uma conta?';
                 toggleBtn.textContent = 'Fazer login';
-                registerFields.classList.remove('hidden');
-                adminField.classList.add('hidden');
+                // Mostra info do primeiro usuário se não houver ninguém
+                if (usuarios.length === 0) {
+                    firstUserInfo.classList.remove('hidden');
+                } else {
+                    firstUserInfo.classList.add('hidden');
+                }
+                // Mostra campos extras do cadastro
+                document.getElementById('reg-nome').parentElement.style.display = 'block';
+                document.getElementById('reg-celular').parentElement.style.display = 'block';
+                document.getElementById('reg-codigo-igreja').parentElement.style.display = 'block';
             }
         }
 
@@ -566,21 +638,13 @@
                     return;
                 }
                 
-                // Se for admin, verifica senha admin
-                if (user.isAdmin) {
-                    const adminPassword = document.getElementById('admin-password').value;
-                    if (adminPassword !== CONFIG.ADMIN_PASSWORD) {
-                        showAuthError('Senha de administrador incorreta.');
-                        return;
-                    }
-                }
-                
                 state.currentUser = user;
                 state.isAdmin = user.isAdmin || false;
+                state.isMaster = user.isMaster || false;
                 loginSuccess();
                 
             } else {
-                // REGISTRO
+                // CADASTRO
                 const nome = document.getElementById('reg-nome').value.trim();
                 const celular = document.getElementById('reg-celular').value.trim();
                 const codigoIgreja = document.getElementById('reg-codigo-igreja').value.trim();
@@ -600,22 +664,25 @@
                     return;
                 }
                 
-                // Verifica se é o primeiro usuário (será admin)
+                // Verifica se é o primeiro usuário (será admin master)
                 const isFirstUser = usuarios.length === 0;
                 
-                // Verifica código da igreja
                 let igrejaId = null;
+                let igrejaEncontrada = null;
+                
+                // Se forneceu código, procura a igreja
                 if (codigoIgreja) {
-                    const igreja = igrejas.find(i => i.codigo === codigoIgreja);
-                    if (!igreja) {
+                    igrejaEncontrada = igrejas.find(i => i.codigo === codigoIgreja);
+                    if (!igrejaEncontrada) {
                         showAuthError('Código da igreja inválido. Verifique ou deixe em branco para criar uma nova.');
                         return;
                     }
-                    igrejaId = igreja.id;
+                    igrejaId = igrejaEncontrada.id;
                 }
                 
-                // Se for o primeiro usuário, ele será admin e poderá criar a igreja depois
-                const isAdmin = isFirstUser || false;
+                // Se for o primeiro usuário, ele será admin master
+                const isAdmin = isFirstUser;
+                const isMaster = isFirstUser;
                 
                 const newUser = {
                     id: Date.now(),
@@ -624,49 +691,43 @@
                     celular,
                     senha,
                     isAdmin: isAdmin,
-                    isMaster: isFirstUser,
+                    isMaster: isMaster,
                     igrejaId: igrejaId,
                     dataCriacao: new Date().toISOString()
                 };
                 usuarios.push(newUser);
                 
                 // Se não tiver igreja, adiciona como membro sem igreja
-                if (!igrejaId) {
-                    membros.push({
-                        id: newUser.id,
-                        nome: newUser.nome,
-                        foto: `https://i.pravatar.cc/150?u=${newUser.id}`,
-                        funcao: isAdmin ? 'Administrador' : 'Voluntário',
-                        telefone: newUser.celular,
-                        email: newUser.email,
-                        igrejaId: null
-                    });
-                } else {
-                    // Adiciona à igreja existente
-                    membros.push({
-                        id: newUser.id,
-                        nome: newUser.nome,
-                        foto: `https://i.pravatar.cc/150?u=${newUser.id}`,
-                        funcao: isAdmin ? 'Administrador' : 'Voluntário',
-                        telefone: newUser.celular,
-                        email: newUser.email,
-                        igrejaId: igrejaId
-                    });
-                }
+                membros.push({
+                    id: newUser.id,
+                    nome: newUser.nome,
+                    foto: `https://i.pravatar.cc/150?u=${newUser.id}`,
+                    funcao: isAdmin ? 'Administrador Master' : 'Voluntário',
+                    telefone: newUser.celular,
+                    email: newUser.email,
+                    igrejaId: igrejaId
+                });
                 
                 saveData();
                 
                 if (isFirstUser) {
-                    showToast('✅ Conta criada! Você é o administrador master. Crie sua igreja agora.', 'fa-crown');
-                    // Login automático
+                    showToast('👑 Você é o primeiro usuário! Agora crie sua igreja.', 'fa-crown');
                     state.currentUser = newUser;
                     state.isAdmin = true;
+                    state.isMaster = true;
+                    loginSuccess();
+                } else if (igrejaId) {
+                    showToast(`✅ Bem-vindo à ${igrejaEncontrada.nome}!`, 'fa-church');
+                    state.currentUser = newUser;
+                    state.isAdmin = isAdmin;
+                    state.isMaster = isMaster;
                     loginSuccess();
                 } else {
-                    showToast('✅ Conta criada com sucesso! Faça login.', 'fa-check-circle');
-                    toggleAuthMode();
-                    document.getElementById('auth-email').value = email;
-                    document.getElementById('auth-password').value = '';
+                    showToast('✅ Conta criada! Você precisa ser vinculado a uma igreja.', 'fa-check-circle');
+                    state.currentUser = newUser;
+                    state.isAdmin = isAdmin;
+                    state.isMaster = isMaster;
+                    loginSuccess();
                 }
             }
         }
@@ -714,10 +775,13 @@
             if (confirm('Tem certeza que deseja sair?')) {
                 state.currentUser = null;
                 state.isAdmin = false;
+                state.isMaster = false;
                 document.getElementById('auth-container').classList.remove('hidden');
                 document.getElementById('app-container').classList.add('hidden');
                 document.getElementById('auth-password').value = '';
-                document.getElementById('admin-password').value = '';
+                // Volta para modo cadastro
+                state.isLoginMode = false;
+                toggleAuthMode();
                 showToast('👋 Até logo!', 'fa-wave');
             }
         }
@@ -729,8 +793,8 @@
             const nome = prompt('Digite o nome da sua igreja:');
             if (!nome) return;
             
-            const endereco = prompt('Digite o endereço da igreja:');
-            const pastor = prompt('Digite o nome do pastor/ líder:');
+            const endereco = prompt('Digite o endereço da igreja (opcional):');
+            const pastor = prompt('Digite o nome do pastor/líder (opcional):');
             
             const codigo = 'IGR-' + Date.now().toString().slice(-6);
             
@@ -754,17 +818,15 @@
                 const member = membros.find(m => m.id === state.currentUser.id);
                 if (member) {
                     member.igrejaId = novaIgreja.id;
+                    member.funcao = 'Administrador Master';
                 }
             }
             
             saveData();
             
             showToast(`✅ Igreja "${nome}" criada com sucesso!`, 'fa-church');
-            navigateTo('dashboard');
-            
-            // Atualiza display da igreja
             document.getElementById('user-igreja-display').textContent = `🏛️ ${nome}`;
-            document.getElementById('user-igreja-display').classList.remove('hidden');
+            navigateTo('dashboard');
         }
 
         // ============================================
@@ -839,7 +901,7 @@
                 </div>
                 <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-2xl text-sm text-amber-700">
                     <i class="fa-solid fa-info-circle mr-2"></i>
-                    Apenas usuários da sua igreja aparecem aqui. O administrador master (criador) não pode ser removido.
+                    Apenas usuários da sua igreja aparecem aqui. O administrador master não pode ser removido.
                 </div>
             `;
         }
@@ -953,7 +1015,7 @@
             const userIgreja = igrejas.find(i => i.id === state.currentUser.igrejaId);
             
             // Se o usuário é admin master e não tem igreja, mostra para criar
-            if (state.currentUser.isMaster && !state.currentUser.igrejaId) {
+            if (state.isMaster && !state.currentUser.igrejaId) {
                 container.innerHTML = `
                     <div class="max-w-7xl mx-auto">
                         <div class="bg-white rounded-3xl p-8 md:p-12 text-center card-hover border-2 border-orange-200">
@@ -983,9 +1045,15 @@
                     <div class="max-w-7xl mx-auto">
                         <div class="bg-white rounded-3xl p-8 md:p-12 text-center card-hover">
                             <div class="text-6xl mb-6">🏛️</div>
-                            <h2 class="text-2xl font-bold text-slate-800 mb-4">Você não está vinculado a uma igreja</h2>
+                            <h2 class="text-2xl font-bold text-slate-800 mb-4">Aguardando vínculo com uma igreja</h2>
                             <p class="text-slate-500">Entre em contato com o administrador da sua igreja para obter o código de acesso.</p>
-                            <p class="text-slate-400 text-sm mt-4">Código da igreja: <span class="font-mono bg-slate-100 px-3 py-1 rounded">IGR-XXXXXX</span></p>
+                            <p class="text-slate-400 text-sm mt-4">Ou, se você é o primeiro usuário, clique em "Criar Igreja".</p>
+                            ${state.isAdmin ? `
+                            <button onclick="createIgreja()" 
+                                    class="mt-4 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-2xl font-bold btn-touch transition-colors inline-flex items-center gap-2">
+                                <i class="fa-solid fa-plus-circle"></i>
+                                Criar Igreja
+                            </button>` : ''}
                         </div>
                     </div>
                 `;
@@ -1002,6 +1070,7 @@
                     <div class="mb-6 md:mb-8">
                         <h1 class="text-2xl md:text-4xl font-bold text-slate-900">Bem-vindo, ${state.currentUser.nome}! 👋</h1>
                         <p class="text-slate-500 text-sm md:text-base">🏛️ ${userIgreja.nome}</p>
+                        ${state.isMaster ? '<span class="inline-block mt-1 text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-semibold">👑 Administrador Master</span>' : ''}
                     </div>
                     
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-10">
@@ -1375,9 +1444,10 @@
                         <div>
                             <h2 class="text-xl md:text-2xl font-semibold">Painel Administrativo</h2>
                             <p class="text-sm text-slate-500">${adminCount} administradores • ${userIgreja ? `🏛️ ${userIgreja.nome}` : 'Sem igreja'}</p>
+                            ${state.isMaster ? '<span class="inline-block mt-1 text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-semibold">👑 Administrador Master</span>' : ''}
                         </div>
                         <div class="flex gap-3 w-full sm:w-auto flex-wrap">
-                            ${!userIgreja && state.currentUser.isMaster ? `
+                            ${!userIgreja && state.isMaster ? `
                             <button onclick="createIgreja()" 
                                     class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-medium btn-touch transition-colors">
                                 <i class="fa-solid fa-church"></i>
@@ -1469,7 +1539,7 @@
             const userIgreja = igrejas.find(i => i.id === state.currentUser.igrejaId);
             if (!userIgreja) {
                 showToast('⚠️ Você precisa ter uma igreja para criar cultos.', 'fa-exclamation-triangle');
-                if (state.currentUser.isMaster) {
+                if (state.isMaster) {
                     createIgreja();
                 }
                 return;
@@ -1484,7 +1554,6 @@
             const horario = prompt('Digite o horário (ex: 09:00):', '09:00');
             if (!horario) return;
             
-            // Pergunta se quer adicionar posições
             const addPositions = confirm('Deseja adicionar posições agora?');
             
             let escalas = {};
@@ -1783,11 +1852,6 @@
         function initializeApp() {
             loadData();
             
-            // Se não há dados, inicializa vazio
-            if (!loadData()) {
-                initDefaultData();
-            }
-            
             updateNotificationBadge();
             renderSidebar();
             navigateTo("dashboard");
@@ -1807,8 +1871,11 @@
         // Inicia quando o DOM estiver pronto
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
-            if (!loadData()) {
-                initDefaultData();
+            // Mostra info do primeiro usuário se não houver ninguém
+            if (usuarios.length === 0) {
+                document.getElementById('first-user-info').classList.remove('hidden');
+            } else {
+                document.getElementById('first-user-info').classList.add('hidden');
             }
         });
     </script>
